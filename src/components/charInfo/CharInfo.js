@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
@@ -6,66 +6,52 @@ import Page404 from "../page404/Page404";
 
 import "./charInfo.scss";
 
-class CharInfo extends Component {
-  state = {
-    character: null,
-    loading: false,
-    error: false,
+function CharInfo(props) {
+  const [character, setCharacter] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const marvelService = MarvelService();
+
+  const characterLoaded = (character) => {
+    setCharacter(character);
+    setLoading(false);
   };
 
-  marvelService = new MarvelService();
+  const getCharacterData = () => {
+    setLoading(true);
 
-  setLoading = () => {
-    this.setState({
-      loading: true,
-    });
-  };
-
-  setError = () => {
-    this.setState({
-      error: true,
-      loading: false,
-    });
-  };
-
-  characterLoaded = (character) => this.setState({ character, loading: false });
-
-  getCharacterData = () => {
-    this.setLoading();
-
-    this.marvelService.getCharactersDataById(this.props.characterId).then(this.characterLoaded).catch(this.setError);
-  };
-
-  componentDidMount() {
-    this.getCharacterData();
-
-    if (this.state.error === true) {
-      this.setState({
-        error: false,
+    marvelService
+      .getCharactersDataById(props.characterId)
+      .then(characterLoaded)
+      .catch(() => {
+        setError(true);
+        setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    getCharacterData();
+
+    if (error === true) {
+      setError((error) => !error);
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.characterId !== this.props.characterId) {
-      this.getCharacterData();
-    }
-  }
+  useEffect(() => {
+    getCharacterData();
+  }, [props.characterId]);
 
-  render() {
-    const { loading, error, character } = this.state;
+  let spinner = loading ? <Spinner /> : null;
+  let errorMessage = error ? <Page404 /> : null;
+  let content = !loading && !error && character ? <Character character={character} /> : null;
 
-    let spinner = loading ? <Spinner /> : null;
-    let errorMessage = error ? <Page404 /> : null;
-    let content = !loading && !error && character ? <Character character={character} /> : null;
-
-    return (
-      <>
-        {errorMessage} {spinner}
-        <div className="char__info">{content}</div>
-      </>
-    );
-  }
+  return (
+    <>
+      {errorMessage} {spinner}
+      <div className="char__info">{content}</div>
+    </>
+  );
 }
 
 function Character({ character }) {

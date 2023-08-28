@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
@@ -7,85 +7,68 @@ import Page404 from "../page404/Page404";
 import "./randomChar.scss";
 import mjolnir from "../../resources/img/mjolnir.png";
 
-class RandomChar extends Component {
-  state = {
-    character: {},
-    loading: true,
-    error: false,
+function RandomChar() {
+  const [character, setCharacter] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const marvelService = MarvelService();
+
+  const characterLoaded = (character) => {
+    setCharacter(character);
+
+    setLoading(false);
   };
 
-  setLoading = () => {
-    this.setState({
-      loading: true,
-    });
-  };
-
-  setError = () => {
-    this.setState({
-      error: true,
-      loading: false,
-    });
-  };
-
-  clearError = () => {
-    this.setState({
-      error: true,
-    });
-  };
-
-  marvelService = new MarvelService();
-
-  characterLoaded = (character) => this.setState({ character, loading: false });
-
-  randomId = (min, max) => {
+  const randomId = (min, max) => {
     return min + Math.random() * (max - min);
   };
 
-  getCharacterData = () => {
-    const id = this.randomId(1011000, 1011400).toFixed();
+  const getCharacterData = () => {
+    const id = randomId(1011000, 1011400).toFixed();
 
-    this.setLoading();
+    setLoading(true);
 
-    this.marvelService.getCharactersDataById(id).then(this.characterLoaded).catch(this.setError);
+    marvelService
+      .getCharactersDataById(id)
+      .then(characterLoaded)
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
 
-    if (this.state.error === true) {
-      this.setState(({ error }) => ({
-        error: !error,
-      }));
+    if (error === true) {
+      setError((error) => !error);
     }
   };
 
-  componentDidMount() {
-    this.getCharacterData();
-  }
+  useEffect(() => {
+    getCharacterData();
+  }, []);
 
-  render() {
-    const { character, loading, error } = this.state;
+  const spinner = loading ? <Spinner /> : null;
 
-    const spinner = loading ? <Spinner /> : null;
+  const content = !loading && !error ? <CharacterDynamicComponent character={character} /> : null;
 
-    const content = !loading && !error ? <CharacterDynamicComponent character={character} /> : null;
+  const errorMessage = error ? <Page404 /> : null;
 
-    const errorMessage = error ? <Page404 /> : null;
-
-    return (
-      <div className="randomchar">
-        {content} {errorMessage} {spinner}
-        <div className="randomchar__static">
-          <p className="randomchar__title">
-            Random character for today!
-            <br />
-            Do you want to get to know him better?
-          </p>
-          <p className="randomchar__title">Or choose another one</p>
-          <button className="button button__main" onClick={this.getCharacterData}>
-            <div className="inner">try it</div>
-          </button>
-          <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
-        </div>
+  return (
+    <div className="randomchar">
+      {content} {errorMessage} {spinner}
+      <div className="randomchar__static">
+        <p className="randomchar__title">
+          Random character for today!
+          <br />
+          Do you want to get to know him better?
+        </p>
+        <p className="randomchar__title">Or choose another one</p>
+        <button className="button button__main" onClick={getCharacterData}>
+          <div className="inner">try it</div>
+        </button>
+        <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 function CharacterDynamicComponent({ character }) {

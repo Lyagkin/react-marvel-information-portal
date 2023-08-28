@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState } from "react";
 
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
@@ -10,48 +10,36 @@ import Skeleton from "../skeleton/Skeleton";
 
 import decoration from "../../resources/img/vision.png";
 
-class App extends Component {
-  state = {
-    characterId: "",
-  };
+function App() {
+  const [characterId, setCharacterId] = useState("");
 
-  setCharacterId = (id) => {
-    this.setState({
-      characterId: id,
-    });
-  };
+  return (
+    <div className="app">
+      <AppHeader />
+      <main>
+        <ErrorBoundary>
+          <RandomChar />
+        </ErrorBoundary>
 
-  render() {
-    const { characterId } = this.state;
-
-    return (
-      <div className="app">
-        <AppHeader />
-        <main>
+        <div className="char__content">
           <ErrorBoundary>
-            <RandomChar />
+            <CharList setCharacterId={setCharacterId} />
           </ErrorBoundary>
 
-          <div className="char__content">
+          {characterId ? (
             <ErrorBoundary>
-              <CharList setCharacterId={this.setCharacterId} />
+              <CharInfo characterId={characterId} />
             </ErrorBoundary>
-
-            {characterId ? (
-              <ErrorBoundary>
-                <CharInfo characterId={characterId} />
-              </ErrorBoundary>
-            ) : (
-              <ErrorBoundary>
-                <Skeleton />
-              </ErrorBoundary>
-            )}
-          </div>
-          <img className="bg-decoration" src={decoration} alt="vision" />
-        </main>
-      </div>
-    );
-  }
+          ) : (
+            <ErrorBoundary>
+              <Skeleton />
+            </ErrorBoundary>
+          )}
+        </div>
+        <img className="bg-decoration" src={decoration} alt="vision" />
+      </main>
+    </div>
+  );
 }
 
 export default App;

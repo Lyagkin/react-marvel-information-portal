@@ -1,10 +1,10 @@
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-class MarvelService {
-  #apiBaseUrl = "https://gateway.marvel.com:443/v1/public";
-  #apiPublicKey = `apikey=${API_KEY}`;
+function MarvelService() {
+  const apiBaseUrl = "https://gateway.marvel.com:443/v1/public";
+  const apiPublicKey = `apikey=${API_KEY}`;
 
-  getMarvelCharactersData = async (url) => {
+  const getMarvelCharactersData = async (url) => {
     try {
       let responce = await fetch(url);
 
@@ -18,25 +18,25 @@ class MarvelService {
     }
   };
 
-  getAllCharactersData = async (offset = 210) => {
-    const allCharactersData = await this.getMarvelCharactersData(
-      `${this.#apiBaseUrl}/characters?limit=9&offset=${offset}&${this.#apiPublicKey}`
+  const getAllCharactersData = async (offset = 210) => {
+    const allCharactersData = await getMarvelCharactersData(
+      `${apiBaseUrl}/characters?limit=9&offset=${offset}&${apiPublicKey}`
     );
 
     return allCharactersData.data.results.map((characterList) => {
-      return this._transformCharactersData(characterList);
+      return _transformCharactersData(characterList);
     });
   };
 
-  getCharactersDataById = async (charactersId) => {
-    const charactersDataById = await this.getMarvelCharactersData(
-      `${this.#apiBaseUrl}/characters/${charactersId}?${this.#apiPublicKey}`
+  const getCharactersDataById = async (charactersId) => {
+    const charactersDataById = await getMarvelCharactersData(
+      `${apiBaseUrl}/characters/${charactersId}?${apiPublicKey}`
     );
 
-    return this._transformCharactersData(charactersDataById.data.results[0]);
+    return _transformCharactersData(charactersDataById.data.results[0]);
   };
 
-  _transformCharactersData = (charactersData) => {
+  const _transformCharactersData = (charactersData) => {
     return {
       id: charactersData.id,
       name: charactersData.name,
@@ -47,6 +47,8 @@ class MarvelService {
       comics: charactersData.comics.items.splice(0, 10),
     };
   };
+
+  return { getAllCharactersData, getCharactersDataById };
 }
 
 export default MarvelService;
