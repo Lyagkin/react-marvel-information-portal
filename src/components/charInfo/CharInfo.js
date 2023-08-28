@@ -36,10 +36,6 @@ function CharInfo(props) {
     if (error === true) {
       setError((error) => !error);
     }
-  }, []);
-
-  useEffect(() => {
-    getCharacterData();
   }, [props.characterId]);
 
   let spinner = loading ? <Spinner /> : null;
