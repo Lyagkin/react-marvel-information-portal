@@ -4,7 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Description
 
-It is an informational project based on the receipt of data from a free API - (https://www.marvel.com/). At the moment, the logic of the application is based on interaction between class and functional components. But the whole functionality, such as: data storage, manipulation with them are implemented only in class components. This project I created solely for the practical purpose of working out skills with classes in REACT. And get acquainted with the early stage of development of this library. The project will fill up my profile in github and fill it up on vercel. So you can also look at the source code and what the final test product looks like. One exception of the API gives the data to a special key, so I hid mine. For possible implementation you need to register on the portal and add your key to a special variable in the page service.
+It is an informational project based on the receipt of data from a free API - (https://www.marvel.com/). At the moment, the logic of the application is based on functional components. This project I created solely for the practical purpose of working out skills with hooks in REACT. And get acquainted with the early stage of development of this library. The project will fill up my profile in github and fill it up on vercel. So you can also look at the source code and what the final test product looks like. One exception of the API gives the data to a special key, so I hid mine. For possible implementation you need to register on the portal and add your key to a special variable in the page service.
 
 ## Available Scripts
 
