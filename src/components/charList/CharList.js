@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 
 import Spinner from "../spinner/Spinner";
 import Page404 from "../page404/Page404";
@@ -9,28 +9,19 @@ import "./charList.scss";
 
 function CharList(props) {
   const [characterList, setCharacterList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [offset, setOffset] = useState(210);
   const [upLoading, setUploading] = useState(false);
   const [limit, setLimit] = useState(false);
 
-  const marvelService = MarvelService();
+  const { getAllCharactersData, error, loading } = useMarvelService();
 
   const characterListLoaded = (newCharacterList) => {
     setCharacterList((characterList) => characterList.concat(newCharacterList));
-    setLoading(false);
     setUploading(false);
   };
 
   const getCharacterList = (offset) => {
-    marvelService
-      .getAllCharactersData(offset)
-      .then(characterListLoaded)
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
+    getAllCharactersData(offset).then(characterListLoaded);
   };
 
   const updateCharacterList = () => {
@@ -95,7 +86,7 @@ function CharList(props) {
 
   let spinner = loading ? <Spinner /> : null;
   let errorMessage = error ? <Page404 /> : null;
-  let content = !loading && !error ? newCharacterList : null;
+  let content = characterList.length !== 0 ? newCharacterList : null;
   let miniSpinner = upLoading ? <Spinner upLoading={upLoading} /> : null;
 
   let charListStyleClass = "char__list";

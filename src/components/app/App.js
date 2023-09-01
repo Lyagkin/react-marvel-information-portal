@@ -9,15 +9,22 @@ import CharInfo from "../charInfo/CharInfo";
 import Skeleton from "../skeleton/Skeleton";
 
 import decoration from "../../resources/img/vision.png";
+import ComicsList from "../comicsList/ComicsList";
+import SingleComic from "../singleComic/SingleComic";
 
 function App() {
   const [characterId, setCharacterId] = useState("");
+
+  const [comicId, setComicId] = useState("");
 
   return (
     <div className="app">
       <AppHeader />
       <main>
-        <ErrorBoundary>
+        <ComicsList setComicId={setComicId} />
+        {comicId ? <SingleComic comicId={comicId} /> : null}
+
+        {/* <ErrorBoundary>
           <RandomChar />
         </ErrorBoundary>
 
@@ -36,7 +43,7 @@ function App() {
             </ErrorBoundary>
           )}
         </div>
-        <img className="bg-decoration" src={decoration} alt="vision" />
+        <img className="bg-decoration" src={decoration} alt="vision" /> */}
       </main>
     </div>
   );

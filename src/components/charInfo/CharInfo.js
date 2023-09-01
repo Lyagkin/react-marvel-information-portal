@@ -1,42 +1,31 @@
 import { useEffect, useState } from "react";
 
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import Page404 from "../page404/Page404";
 
 import "./charInfo.scss";
 
-function CharInfo(props) {
+function CharInfo({ characterId }) {
   const [character, setCharacter] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
-  const marvelService = MarvelService();
+  const { getCharactersDataById, loading, error, clearError } = useMarvelService();
 
   const characterLoaded = (character) => {
     setCharacter(character);
-    setLoading(false);
   };
 
   const getCharacterData = () => {
-    setLoading(true);
+    if (error) {
+      clearError();
+    }
 
-    marvelService
-      .getCharactersDataById(props.characterId)
-      .then(characterLoaded)
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
+    getCharactersDataById(characterId).then(characterLoaded);
   };
 
   useEffect(() => {
     getCharacterData();
-
-    if (error === true) {
-      setError((error) => !error);
-    }
-  }, [props.characterId]);
+  }, [characterId]);
 
   let spinner = loading ? <Spinner /> : null;
   let errorMessage = error ? <Page404 /> : null;
