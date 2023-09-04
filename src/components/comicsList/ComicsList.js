@@ -40,7 +40,7 @@ const ComicsList = ({ setComicId }) => {
   const renderedComicsList = comicsList.map(({ id, thumbnail, title, prices }, index) => {
     return (
       <li key={index} className="comics__item" onClick={() => setComicId(id)}>
-        <a href="#!">
+        <a href={`/comics/${id}`}>
           <img src={thumbnail} alt={title} className="comics__item-img" />
           <div className="comics__item-name">{title}</div>
           <div className="comics__item-price">{prices}</div>

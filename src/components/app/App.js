@@ -1,51 +1,44 @@
 import { useState } from "react";
 
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom/cjs/react-router-dom";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-import Skeleton from "../skeleton/Skeleton";
 
-import decoration from "../../resources/img/vision.png";
-import ComicsList from "../comicsList/ComicsList";
-import SingleComic from "../singleComic/SingleComic";
+import MainPage from "../pages/MainPage";
+import ComicsPage from "../pages/ComicsPage";
+import SingleComicPage from "../pages/SingleComicPage";
 
 function App() {
-  const [characterId, setCharacterId] = useState("");
-
   const [comicId, setComicId] = useState("");
 
   return (
-    <div className="app">
-      <AppHeader />
-      <main>
-        <ComicsList setComicId={setComicId} />
-        {comicId ? <SingleComic comicId={comicId} /> : null}
+    <Router>
+      <div className="app">
+        <AppHeader />
+        <main>
+          <Switch>
+            <Route exact path="/">
+              <ErrorBoundary>
+                <MainPage />
+              </ErrorBoundary>
+            </Route>
 
-        {/* <ErrorBoundary>
-          <RandomChar />
-        </ErrorBoundary>
+            <Route exact path="/comics">
+              <ErrorBoundary>
+                <ComicsPage setComicId={setComicId} />
+              </ErrorBoundary>
+            </Route>
 
-        <div className="char__content">
-          <ErrorBoundary>
-            <CharList setCharacterId={setCharacterId} />
-          </ErrorBoundary>
-
-          {characterId ? (
-            <ErrorBoundary>
-              <CharInfo characterId={characterId} />
-            </ErrorBoundary>
-          ) : (
-            <ErrorBoundary>
-              <Skeleton />
-            </ErrorBoundary>
-          )}
-        </div>
-        <img className="bg-decoration" src={decoration} alt="vision" /> */}
-      </main>
-    </div>
+            <Route>
+              <ErrorBoundary>
+                <SingleComicPage comicId={comicId} />
+              </ErrorBoundary>
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    </Router>
   );
 }
 

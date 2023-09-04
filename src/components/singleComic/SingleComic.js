@@ -52,7 +52,7 @@ const Comic = ({ comic }) => {
         <p className="single-comic__descr">Language: {language}</p>
         <div className="single-comic__price">{prices}</div>
       </div>
-      <a href="#!" className="single-comic__back">
+      <a href="/comics" className="single-comic__back">
         Back to all
       </a>
     </>
