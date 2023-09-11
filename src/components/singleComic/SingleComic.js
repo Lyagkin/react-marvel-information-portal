@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { Link, useParams, useNavigate } from "react-router-dom";
+
 import useMarvelService from "../../services/MarvelService";
 
 import Page404 from "../page404/Page404";
@@ -7,8 +9,14 @@ import Spinner from "../spinner/Spinner";
 
 import "./singleComic.scss";
 
-const SingleComic = ({ comicId }) => {
+const SingleComic = () => {
   const [comic, setComic] = useState(null);
+
+  const navigate = useNavigate();
+
+  const goBack = () => navigate(-1);
+
+  const { comicId } = useParams();
 
   const { getSingleComicById, loading, error, clearError } = useMarvelService();
 
@@ -30,16 +38,17 @@ const SingleComic = ({ comicId }) => {
 
   const spinner = loading ? <Spinner /> : null;
   const errorPage = error ? <Page404 /> : null;
-  const content = comic ? <Comic comic={comic} /> : null;
+  const content = comic ? <Comic goBack={goBack} comic={comic} /> : null;
 
   return (
-    <div className="single-comic">
-      {spinner} {errorPage} {content}
-    </div>
+    <>
+      {spinner} {errorPage}
+      <div className="single-comic">{content}</div>
+    </>
   );
 };
 
-const Comic = ({ comic }) => {
+const Comic = ({ comic, goBack }) => {
   const { thumbnail, title, description, pageCount, language, prices } = comic;
 
   return (
@@ -51,10 +60,14 @@ const Comic = ({ comic }) => {
         <p className="single-comic__descr">{pageCount}</p>
         <p className="single-comic__descr">Language: {language}</p>
         <div className="single-comic__price">{prices}</div>
+        <button className="single-comic__button" onClick={goBack}>
+          Go back!
+        </button>
       </div>
-      <a href="/comics" className="single-comic__back">
-        Back to all
-      </a>
+
+      {/* <Link style={{ color: "#9F0013" }} to="/comics" className="single-comic__back">
+        Comics
+      </Link> */}
     </>
   );
 };

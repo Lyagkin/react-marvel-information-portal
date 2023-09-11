@@ -1,41 +1,33 @@
-import { useState } from "react";
+import { lazy, Suspense } from "react";
 
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom/cjs/react-router-dom";
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import AppHeader from "../appHeader/AppHeader";
 
-import MainPage from "../pages/MainPage";
-import ComicsPage from "../pages/ComicsPage";
-import SingleComicPage from "../pages/SingleComicPage";
+import Spinner from "../spinner/Spinner";
+
+const PageNotFound = lazy(() => import("../pages/404"));
+const MainPage = lazy(() => import("../pages/MainPage"));
+const ComicsPage = lazy(() => import("../pages/ComicsPage"));
+const SingleComicPage = lazy(() => import("../pages/SingleComicPage"));
 
 function App() {
-  const [comicId, setComicId] = useState("");
-
   return (
     <Router>
       <div className="app">
         <AppHeader />
         <main>
-          <Switch>
-            <Route exact path="/">
-              <ErrorBoundary>
-                <MainPage />
-              </ErrorBoundary>
-            </Route>
+          <Suspense fallback={<Spinner />}>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
 
-            <Route exact path="/comics">
-              <ErrorBoundary>
-                <ComicsPage setComicId={setComicId} />
-              </ErrorBoundary>
-            </Route>
-
-            <Route>
-              <ErrorBoundary>
-                <SingleComicPage comicId={comicId} />
-              </ErrorBoundary>
-            </Route>
-          </Switch>
+              <Route path="comics" element={<ComicsPage />}>
+                <Route path=":comicId" element={<SingleComicPage />} />
+                <Route path="characters/:comicId" element={<SingleComicPage />} />
+              </Route>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </Router>

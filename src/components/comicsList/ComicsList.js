@@ -1,4 +1,6 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { NavLink } from "react-router-dom";
 
 import useMarvelService from "../../services/MarvelService";
 
@@ -39,19 +41,19 @@ const ComicsList = ({ setComicId }) => {
 
   const renderedComicsList = comicsList.map(({ id, thumbnail, title, prices }, index) => {
     return (
-      <li key={index} className="comics__item" onClick={() => setComicId(id)}>
-        <a href={`/comics/${id}`}>
+      <li key={index} className="comics__item">
+        <NavLink to={`/comics/${id}`}>
           <img src={thumbnail} alt={title} className="comics__item-img" />
           <div className="comics__item-name">{title}</div>
           <div className="comics__item-price">{prices}</div>
-        </a>
+        </NavLink>
       </li>
     );
   });
 
-  const spinner = loading && comicsList.length === 0 ? <Spinner /> : null;
+  const spinner = loading && !comicsList.length ? <Spinner /> : null;
   const errorPage = error ? <Page404 /> : null;
-  const content = comicsList.length !== 0 ? renderedComicsList : null;
+  const content = comicsList.length ? renderedComicsList : null;
 
   const gridStyle = (loading || error) && !uploading ? "comics__grid center" : "comics__grid";
 

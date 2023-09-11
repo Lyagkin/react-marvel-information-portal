@@ -1,15 +1,26 @@
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
+import { useOutlet } from "react-router-dom";
+
 import AppBanner from "../appBanner/AppBanner";
 import ComicsList from "../comicsList/ComicsList";
 
-function ComicsPage({ setComicId }) {
+function ComicsPage() {
+  const outlet = useOutlet();
+
+  console.log(outlet);
   return (
     <>
-      <AppBanner />
-      <ErrorBoundary>
-        <ComicsList setComicId={setComicId} />
-      </ErrorBoundary>
+      {outlet ? (
+        outlet
+      ) : (
+        <>
+          <AppBanner />
+          <ErrorBoundary>
+            <ComicsList />
+          </ErrorBoundary>
+        </>
+      )}
     </>
   );
 }

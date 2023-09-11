@@ -84,10 +84,9 @@ function CharList(props) {
     );
   });
 
-  let spinner = loading ? <Spinner /> : null;
+  let spinner = loading && !upLoading ? <Spinner /> : null;
   let errorMessage = error ? <Page404 /> : null;
   let content = characterList.length !== 0 ? newCharacterList : null;
-  let miniSpinner = upLoading ? <Spinner upLoading={upLoading} /> : null;
 
   let charListStyleClass = "char__list";
   let buttonStyle = null;
@@ -111,9 +110,6 @@ function CharList(props) {
     <div className={charListStyleClass}>
       {spinner} {errorMessage}
       <ul className="char__grid">{content}</ul>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }}>
-        {miniSpinner}
-      </div>
       <div style={buttonShow}>
         <button
           style={disabled}

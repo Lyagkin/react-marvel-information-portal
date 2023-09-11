@@ -27,6 +27,20 @@
         color: $main-color;
         margin-top: 25px;
     }
+    &__button {
+      border: none;
+      margin-top: 20px;
+      background-color: $main-color;
+      padding: 5px 10px;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 5px 5px 5px rgba(0, 0, 0, .7);
+      transition: all .5s;
+      &:hover {
+        transform: translateY(5px);
+      }
+    }
     &__back {
         justify-self: end;
         font-weight: bold;

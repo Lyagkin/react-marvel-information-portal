@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { Link } from "react-router-dom";
+
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import Page404 from "../page404/Page404";
@@ -42,6 +44,11 @@ function CharInfo({ characterId }) {
 function Character({ character }) {
   const { thumbnail, name, description, homepage, wiki, comics } = character;
 
+  // comics.map((comic) => {
+  //   const regExp = /\d/g;
+  //   console.log(comic.resourceURI.match(regExp).join(""));
+  // });
+
   let imgStyleClass;
 
   if (thumbnail.includes("image_not_available") || thumbnail.includes("gif")) {
@@ -70,11 +77,17 @@ function Character({ character }) {
       <div className="char__comics">Comics:</div>
       <ul className="char__comics-list">
         {comics.length !== 0
-          ? comics.map((comic) => (
-              <li className="char__comics-item" key={comic.name}>
-                <a href={comic.resourceURI}>{comic.name}</a>
-              </li>
-            ))
+          ? comics.map((comic) => {
+              const regExp = /\d/g;
+
+              const id = comic.resourceURI.match(regExp).slice(1).join("");
+
+              return (
+                <li className="char__comics-item" key={comic.name}>
+                  <Link to={`/comics/characters/${id}`}>{comic.name}</Link>
+                </li>
+              );
+            })
           : "Comics about this character is not exist! Sorry!"}
       </ul>
     </>
