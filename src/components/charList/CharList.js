@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
 import useMarvelService from "../../services/MarvelService";
 
 import Spinner from "../spinner/Spinner";
@@ -58,29 +60,30 @@ function CharList(props) {
     }
 
     return (
-      <li
-        onClick={() => {
-          props.setCharacterId(id);
-
-          setFocusRef(index);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === " " || e.key === "Enter") {
+      <CSSTransition key={id} timeout={500} classNames="char">
+        <li
+          onClick={() => {
             props.setCharacterId(id);
 
             setFocusRef(index);
-          }
-        }}
-        ref={setCharacterRefs}
-        style={{ cursor: "pointer" }}
-        key={id}
-        className={itemStyleClass}
-        data-id={id}
-        tabIndex={0}
-      >
-        <img className={imgStyleClass} src={thumbnail} alt={thumbnail} />
-        <div className="char__name">{name}</div>
-      </li>
+          }}
+          onKeyDown={(e) => {
+            if (e.key === " " || e.key === "Enter") {
+              props.setCharacterId(id);
+
+              setFocusRef(index);
+            }
+          }}
+          ref={setCharacterRefs}
+          style={{ cursor: "pointer" }}
+          className={itemStyleClass}
+          data-id={id}
+          tabIndex={0}
+        >
+          <img className={imgStyleClass} src={thumbnail} alt={thumbnail} />
+          <div className="char__name">{name}</div>
+        </li>
+      </CSSTransition>
     );
   });
 
@@ -109,7 +112,9 @@ function CharList(props) {
   return (
     <div className={charListStyleClass}>
       {spinner} {errorMessage}
-      <ul className="char__grid">{content}</ul>
+      <TransitionGroup component="ul" className="char__grid">
+        {content}
+      </TransitionGroup>
       <div style={buttonShow}>
         <button
           style={disabled}

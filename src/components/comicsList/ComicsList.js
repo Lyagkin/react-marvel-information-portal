@@ -7,9 +7,11 @@ import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import Page404 from "../page404/Page404";
 
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+
 import "./comicsList.scss";
 
-const ComicsList = ({ setComicId }) => {
+const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
   const [offset, setNewOffset] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -41,13 +43,15 @@ const ComicsList = ({ setComicId }) => {
 
   const renderedComicsList = comicsList.map(({ id, thumbnail, title, prices }, index) => {
     return (
-      <li key={index} className="comics__item">
-        <NavLink to={`/comics/${id}`}>
-          <img src={thumbnail} alt={title} className="comics__item-img" />
-          <div className="comics__item-name">{title}</div>
-          <div className="comics__item-price">{prices}</div>
-        </NavLink>
-      </li>
+      <CSSTransition key={index} timeout={500} classNames="comics">
+        <li className="comics__item">
+          <NavLink to={`/comics/${id}`}>
+            <img src={thumbnail} alt={title} className="comics__item-img" />
+            <div className="comics__item-name">{title}</div>
+            <div className="comics__item-price">{prices}</div>
+          </NavLink>
+        </li>
+      </CSSTransition>
     );
   });
 
@@ -63,10 +67,10 @@ const ComicsList = ({ setComicId }) => {
 
   return (
     <div className="comics__list">
-      <ul className={gridStyle}>
-        {spinner} {errorPage}
+      {spinner} {errorPage}
+      <TransitionGroup component="ul" className={gridStyle}>
         {content}
-      </ul>
+      </TransitionGroup>
       <button disabled={disabledButton} className={styleButton} onClick={uploadComicsList}>
         <div className="inner">load more</div>
       </button>

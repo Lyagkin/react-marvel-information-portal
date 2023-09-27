@@ -1,0 +1,51 @@
+@import '../../style/variables.scss';
+
+.search__form {
+  margin-top: 10px;
+  padding: 25px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
+  background-color: #fff;
+  label {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  &_wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    &-input {
+      width: 70%;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      line-height: 28px;
+      box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
+      padding: 5px 10px;
+    }
+    &-error {
+      font-weight: bold;
+      font-size: 18px;
+      color: $main-color;
+    }
+  }
+  &_link {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: none;
+    p {
+      font-weight: bold;
+      font-size: 18px;
+      width: 70%;
+      color: green;
+    }
+  }
+}
+
+.active {
+  display: flex;
+}

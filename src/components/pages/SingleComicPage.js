@@ -1,11 +1,11 @@
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import SingleComic from "../singleComic/SingleComic";
+import SingleComicData from "../singleComic/SingleComic";
 
 function SingleComicPage() {
   return (
     <>
       <ErrorBoundary>
-        <SingleComic />
+        <SingleComicData />
       </ErrorBoundary>
     </>
   );

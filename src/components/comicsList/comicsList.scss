@@ -44,3 +44,18 @@
 .opacity {
   opacity: .5;
 }
+
+.comics-enter {
+  opacity: 0;
+}
+.comics-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.comics-exit {
+  opacity: 1;
+}
+.comics-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
+}

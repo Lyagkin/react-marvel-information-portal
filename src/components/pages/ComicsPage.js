@@ -8,7 +8,6 @@ import ComicsList from "../comicsList/ComicsList";
 function ComicsPage() {
   const outlet = useOutlet();
 
-  console.log(outlet);
   return (
     <>
       {outlet ? (

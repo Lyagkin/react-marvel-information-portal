@@ -1,58 +1,12 @@
-import { useEffect, useState } from "react";
-
-import { Link, useParams, useNavigate } from "react-router-dom";
-
-import useMarvelService from "../../services/MarvelService";
-
-import Page404 from "../page404/Page404";
-import Spinner from "../spinner/Spinner";
+import withSingleInfo from "../../hooks/withSingleInfo";
 
 import "./singleComic.scss";
 
-const SingleComic = () => {
-  const [comic, setComic] = useState(null);
-
-  const navigate = useNavigate();
-
-  const goBack = () => navigate(-1);
-
-  const { comicId } = useParams();
-
-  const { getSingleComicById, loading, error, clearError } = useMarvelService();
-
-  const getComicLoaded = (singleComic) => {
-    setComic(singleComic);
-  };
-
-  const getComicData = () => {
-    getSingleComicById(comicId).then(getComicLoaded);
-  };
-
-  useEffect(() => {
-    if (error) {
-      clearError();
-    }
-
-    getComicData();
-  }, [comicId]);
-
-  const spinner = loading ? <Spinner /> : null;
-  const errorPage = error ? <Page404 /> : null;
-  const content = comic ? <Comic goBack={goBack} comic={comic} /> : null;
+const SingleComic = ({ data, goBack }) => {
+  const { thumbnail, title, description, pageCount, language, prices } = data;
 
   return (
-    <>
-      {spinner} {errorPage}
-      <div className="single-comic">{content}</div>
-    </>
-  );
-};
-
-const Comic = ({ comic, goBack }) => {
-  const { thumbnail, title, description, pageCount, language, prices } = comic;
-
-  return (
-    <>
+    <div className="single-comic">
       <img src={thumbnail} alt={title} className="single-comic__img" />
       <div className="single-comic__info">
         <h2 className="single-comic__name">{title}</h2>
@@ -64,12 +18,10 @@ const Comic = ({ comic, goBack }) => {
           Go back!
         </button>
       </div>
-
-      {/* <Link style={{ color: "#9F0013" }} to="/comics" className="single-comic__back">
-        Comics
-      </Link> */}
-    </>
+    </div>
   );
 };
 
-export default SingleComic;
+const SingleComicData = withSingleInfo(SingleComic);
+
+export default SingleComicData;

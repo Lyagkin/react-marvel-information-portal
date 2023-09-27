@@ -42,7 +42,6 @@
         .not_available {
           object-fit: fill;
         }
-
     }
     &__name {
         font-weight: bold;
@@ -51,5 +50,20 @@
         text-transform: uppercase;
         color: #fff;
     }
-
 }
+
+.char-enter {
+  opacity: 0;
+}
+.char-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.char-exit {
+  opacity: 1;
+}
+.char-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
+}
+

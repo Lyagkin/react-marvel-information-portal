@@ -20,6 +20,14 @@ function useMarvelService() {
     return _transformCharactersData(charactersDataById.data.results[0]);
   };
 
+  const getCharacterDataByName = async (charactersName) => {
+    const charactersDataByName = await request(`${apiBaseUrl}/characters?name=${charactersName}&${apiPublicKey}`);
+
+    if (charactersDataByName.data.results.length === 0) {
+      return false;
+    } else return _transformCharactersData(charactersDataByName.data.results[0]);
+  };
+
   const _transformCharactersData = (charactersData) => {
     return {
       id: charactersData.id,
@@ -59,7 +67,16 @@ function useMarvelService() {
     };
   };
 
-  return { getAllCharactersData, getCharactersDataById, getComicsData, getSingleComicById, loading, error, clearError };
+  return {
+    getAllCharactersData,
+    getCharactersDataById,
+    getCharacterDataByName,
+    getComicsData,
+    getSingleComicById,
+    loading,
+    error,
+    clearError,
+  };
 }
 
 export default useMarvelService;

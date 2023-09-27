@@ -8,7 +8,7 @@ import "./randomChar.scss";
 import mjolnir from "../../resources/img/mjolnir.png";
 
 function RandomChar() {
-  const [character, setCharacter] = useState({});
+  const [character, setCharacter] = useState(null);
 
   const { getCharactersDataById, loading, error, clearError } = useMarvelService();
 
@@ -35,10 +35,8 @@ function RandomChar() {
   }, []);
 
   const spinner = loading ? <Spinner /> : null;
-
-  const content = !loading && !error ? <CharacterDynamicComponent character={character} /> : null;
-
   const errorMessage = error ? <Page404 /> : null;
+  const content = !loading && !error ? <CharacterDynamicComponent character={character} /> : null;
 
   return (
     <div className="randomchar">

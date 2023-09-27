@@ -1,0 +1,30 @@
+.character__personal-data {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 30px;
+  &-thumbnail {
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+  }
+  &-description {
+    padding: 15px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 20px;
+    &-name {
+      font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+    button {
+      text-transform: none;
+    }
+  }
+}

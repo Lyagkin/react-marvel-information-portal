@@ -44,11 +44,6 @@ function CharInfo({ characterId }) {
 function Character({ character }) {
   const { thumbnail, name, description, homepage, wiki, comics } = character;
 
-  // comics.map((comic) => {
-  //   const regExp = /\d/g;
-  //   console.log(comic.resourceURI.match(regExp).join(""));
-  // });
-
   let imgStyleClass;
 
   if (thumbnail.includes("image_not_available") || thumbnail.includes("gif")) {
