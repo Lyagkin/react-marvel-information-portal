@@ -6,7 +6,7 @@ function useMarvelService() {
   const apiBaseUrl = "https://gateway.marvel.com:443/v1/public";
   const apiPublicKey = `apikey=${API_KEY}`;
 
-  const { loading, error, request, clearError } = useHttp();
+  const { request, clearError, process, setProcess } = useHttp();
 
   const getAllCharactersData = async (offset = 210) => {
     const allCharactersData = await request(`${apiBaseUrl}/characters?limit=9&offset=${offset}&${apiPublicKey}`);
@@ -73,9 +73,9 @@ function useMarvelService() {
     getCharacterDataByName,
     getComicsData,
     getSingleComicById,
-    loading,
-    error,
     clearError,
+    process,
+    setProcess,
   };
 }
 

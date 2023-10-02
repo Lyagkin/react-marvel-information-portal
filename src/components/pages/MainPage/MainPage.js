@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import ErrorBoundary from "../../errorBoundary/ErrorBoundary";
 
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-import Skeleton from "../skeleton/Skeleton";
+import RandomChar from "../../randomChar/RandomChar";
+import CharList from "../../charList/CharList";
+import CharInfo from "../../charInfo/CharInfo";
+import Skeleton from "../../skeleton/Skeleton";
 
-import decoration from "../../resources/img/vision.png";
-import SearchCharForm from "../searchCharForm/SearchCharForm";
+import decoration from "../../../resources/img/vision.png";
+import SearchCharForm from "../../searchCharForm/SearchCharForm";
 
 import { useOutlet } from "react-router-dom";
 

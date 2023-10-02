@@ -1,0 +1,25 @@
+.error__page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 10px auto;
+  padding: 10px 20px;
+  &-title {
+    text-align: center;
+  }
+  &-subtitle {
+      text-transform: uppercase;
+  }
+  &-img {
+    background-image: url("../../../resources/img/zombie.jpg");
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: cover;
+    width: 90%;
+    height: 60vh;
+    margin: 0 auto;
+    border-radius: 15px;
+    box-shadow: 5px 5px 10px rgba(0,0,0,.25);
+    }
+}

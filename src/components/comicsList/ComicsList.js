@@ -11,13 +11,26 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import "./comicsList.scss";
 
+const setContent = (process, Component, uploading) => {
+  switch (process) {
+    case "loading":
+      return uploading ? <Component /> : <Spinner />;
+    case "error":
+      return <Page404 />;
+    case "confirmed":
+      return <Component />;
+    default:
+      throw new Error("Unexpected process state");
+  }
+};
+
 const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
   const [offset, setNewOffset] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [comicsListLimit, setComicsListLimit] = useState(false);
 
-  const { getComicsData, loading, error } = useMarvelService();
+  const { getComicsData, process, setProcess } = useMarvelService();
 
   const comicsListLoaded = (newComicsList) => {
     setUploading(false);
@@ -25,7 +38,9 @@ const ComicsList = () => {
   };
 
   const getComicsList = (offset) => {
-    getComicsData(offset).then(comicsListLoaded);
+    getComicsData(offset)
+      .then(comicsListLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const uploadComicsList = () => {
@@ -55,23 +70,21 @@ const ComicsList = () => {
     );
   });
 
-  const spinner = loading && !comicsList.length ? <Spinner /> : null;
-  const errorPage = error ? <Page404 /> : null;
-  const content = comicsList.length ? renderedComicsList : null;
-
-  const gridStyle = (loading || error) && !uploading ? "comics__grid center" : "comics__grid";
-
-  const disabledButton = uploading || comicsListLimit ? true : false;
-
-  const styleButton = disabledButton ? "button button__main button__long opacity" : "button button__main button__long";
+  let content = (
+    <TransitionGroup component="ul" className="comics__grid">
+      {renderedComicsList}
+    </TransitionGroup>
+  );
 
   return (
     <div className="comics__list">
-      {spinner} {errorPage}
-      <TransitionGroup component="ul" className={gridStyle}>
-        {content}
-      </TransitionGroup>
-      <button disabled={disabledButton} className={styleButton} onClick={uploadComicsList}>
+      {setContent(process, () => content, uploading)}
+      <button
+        style={{ display: comicsListLimit ? "none" : "block", opacity: uploading ? ".5" : "1" }}
+        disabled={uploading}
+        className="button button__main button__long"
+        onClick={uploadComicsList}
+      >
         <div className="inner">load more</div>
       </button>
     </div>

@@ -3,46 +3,39 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import useMarvelService from "../../services/MarvelService";
-import Spinner from "../spinner/Spinner";
-import Page404 from "../page404/Page404";
+import setContent from "../../utils/setContent";
 
 import "./charInfo.scss";
 
 function CharInfo({ characterId }) {
   const [character, setCharacter] = useState(null);
 
-  const { getCharactersDataById, loading, error, clearError } = useMarvelService();
+  const { getCharactersDataById, process, setProcess, clearError } = useMarvelService();
 
   const characterLoaded = (character) => {
     setCharacter(character);
   };
 
   const getCharacterData = () => {
-    if (error) {
-      clearError();
-    }
-
-    getCharactersDataById(characterId).then(characterLoaded);
+    getCharactersDataById(characterId)
+      .then(characterLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   useEffect(() => {
+    clearError();
     getCharacterData();
   }, [characterId]);
 
-  let spinner = loading ? <Spinner /> : null;
-  let errorMessage = error ? <Page404 /> : null;
-  let content = !loading && !error && character ? <Character character={character} /> : null;
-
   return (
     <>
-      {errorMessage} {spinner}
-      <div className="char__info">{content}</div>
+      <div className="char__info">{setContent(process, Character, character)}</div>
     </>
   );
 }
 
-function Character({ character }) {
-  const { thumbnail, name, description, homepage, wiki, comics } = character;
+function Character({ data }) {
+  const { thumbnail, name, description, homepage, wiki, comics } = data;
 
   let imgStyleClass;
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
@@ -9,27 +9,42 @@ import Page404 from "../page404/Page404";
 
 import "./charList.scss";
 
+const setContent = (process, Component, uploading) => {
+  switch (process) {
+    case "loading":
+      return uploading ? <Component /> : <Spinner />;
+    case "error":
+      return <Page404 />;
+    case "confirmed":
+      return <Component />;
+    default:
+      throw new Error("Unexpected process state");
+  }
+};
+
 function CharList(props) {
   const [characterList, setCharacterList] = useState([]);
   const [offset, setOffset] = useState(210);
-  const [upLoading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState("");
   const [limit, setLimit] = useState(false);
 
-  const { getAllCharactersData, error, loading } = useMarvelService();
+  const { getAllCharactersData, process, setProcess } = useMarvelService();
 
   const characterListLoaded = (newCharacterList) => {
     setCharacterList((characterList) => characterList.concat(newCharacterList));
-    setUploading(false);
+    setUploading("");
   };
 
   const getCharacterList = (offset) => {
-    getAllCharactersData(offset).then(characterListLoaded);
+    getAllCharactersData(offset)
+      .then(characterListLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const updateCharacterList = () => {
     if (offset <= 1553) {
       setOffset((offset) => offset + 9);
-      setUploading(true);
+      setUploading("uploading");
     } else {
       setLimit(true);
     }
@@ -40,10 +55,6 @@ function CharList(props) {
   }, [offset]);
 
   const charactersRefs = useRef([]);
-
-  const setCharacterRefs = useCallback((elem) => {
-    charactersRefs.current.push(elem);
-  }, []);
 
   const setFocusRef = (index) => {
     charactersRefs.current.forEach((ref) => ref.classList.remove("char__item_selected"));
@@ -74,7 +85,9 @@ function CharList(props) {
               setFocusRef(index);
             }
           }}
-          ref={setCharacterRefs}
+          ref={(elem) => {
+            charactersRefs.current[index] = elem;
+          }}
           style={{ cursor: "pointer" }}
           className={itemStyleClass}
           data-id={id}
@@ -87,44 +100,27 @@ function CharList(props) {
     );
   });
 
-  let spinner = loading && !upLoading ? <Spinner /> : null;
-  let errorMessage = error ? <Page404 /> : null;
-  let content = characterList.length !== 0 ? newCharacterList : null;
+  let content = (
+    <ul className="char__grid">
+      <TransitionGroup component={null}>{newCharacterList}</TransitionGroup>
+    </ul>
+  );
 
-  let charListStyleClass = "char__list";
-  let buttonStyle = null;
-  let buttonShow;
-
-  if (loading) {
-    charListStyleClass += ` center`;
-  }
-
-  if (upLoading) {
-    buttonStyle = true;
-  }
-
-  if (limit || offset === 1553) {
-    buttonShow = { display: "none" };
-  }
-
-  let disabled = buttonStyle ? { opacity: 0.5 } : { opacity: 1 };
+  const charactersListItems = useMemo(() => {
+    return setContent(process, () => content, uploading);
+  }, [process]);
 
   return (
-    <div className={charListStyleClass}>
-      {spinner} {errorMessage}
-      <TransitionGroup component="ul" className="char__grid">
-        {content}
-      </TransitionGroup>
-      <div style={buttonShow}>
-        <button
-          style={disabled}
-          disabled={buttonStyle}
-          className="button button__main button__long"
-          onClick={updateCharacterList}
-        >
-          <div className="inner">load more</div>
-        </button>
-      </div>
+    <div className="char__list">
+      {charactersListItems}
+      <button
+        style={{ display: limit ? "none" : "block", opacity: uploading ? "0.5" : "1" }}
+        disabled={uploading}
+        className="button button__main button__long"
+        onClick={updateCharacterList}
+      >
+        <div className="inner">load more</div>
+      </button>
     </div>
   );
 }

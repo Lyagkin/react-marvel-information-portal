@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
 import useMarvelService from "../../services/MarvelService";
-import Spinner from "../spinner/Spinner";
-import Page404 from "../page404/Page404";
+import setContent from "../../utils/setContent";
 
 import "./randomChar.scss";
 import mjolnir from "../../resources/img/mjolnir.png";
@@ -10,7 +9,7 @@ import mjolnir from "../../resources/img/mjolnir.png";
 function RandomChar() {
   const [character, setCharacter] = useState(null);
 
-  const { getCharactersDataById, loading, error, clearError } = useMarvelService();
+  const { getCharactersDataById, clearError, process, setProcess } = useMarvelService();
 
   const characterLoaded = (character) => {
     setCharacter(character);
@@ -21,26 +20,21 @@ function RandomChar() {
   };
 
   const getCharacterData = () => {
+    clearError();
     const id = randomId(1011000, 1011400).toFixed();
 
-    if (error) {
-      clearError();
-    }
-
-    getCharactersDataById(id).then(characterLoaded);
+    getCharactersDataById(id)
+      .then(characterLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   useEffect(() => {
     getCharacterData();
   }, []);
 
-  const spinner = loading ? <Spinner /> : null;
-  const errorMessage = error ? <Page404 /> : null;
-  const content = !loading && !error ? <CharacterDynamicComponent character={character} /> : null;
-
   return (
     <div className="randomchar">
-      {content} {errorMessage} {spinner}
+      {setContent(process, View, character)}
       <div className="randomchar__static">
         <p className="randomchar__title">
           Random character for today!
@@ -48,7 +42,12 @@ function RandomChar() {
           Do you want to get to know him better?
         </p>
         <p className="randomchar__title">Or choose another one</p>
-        <button className="button button__main" onClick={getCharacterData}>
+        <button
+          className="button button__main"
+          disabled={process === "loading"}
+          style={{ opacity: process === "loading" ? ".5" : "1" }}
+          onClick={getCharacterData}
+        >
           <div className="inner">try it</div>
         </button>
         <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
@@ -57,8 +56,8 @@ function RandomChar() {
   );
 }
 
-function CharacterDynamicComponent({ character }) {
-  let { thumbnail, name, description, homepage, wiki } = character;
+function View({ data }) {
+  let { thumbnail, name, description, homepage, wiki } = data;
 
   let imgStyleClass = "randomchar__img";
 

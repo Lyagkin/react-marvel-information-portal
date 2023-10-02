@@ -1,16 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import Page404 from "../page404/Page404";
+
 import useMarvelService from "../../services/MarvelService";
+
 import { Formik, Field, Form, ErrorMessage } from "formik";
+
 import * as Yup from "yup";
 
 import "./searchCharForm.scss";
 
+const setContent = (process, charName, characterNotFound) => {
+  switch (process) {
+    case "waiting":
+      return null;
+    case "loading":
+      return "search...";
+    case "error":
+      return <Page404 />;
+    case "confirmed":
+      return charName === "not found!" ? characterNotFound.element : `There is! Visit ${charName.name} page?`;
+    default:
+      throw new Error("Unexpected process state");
+  }
+};
+
 const SearchCharForm = () => {
   const [charName, setCharName] = useState("");
 
-  const { getCharacterDataByName, loading, error, clearError } = useMarvelService();
+  useEffect(() => {
+    setProcess("waiting");
+  }, []);
+
+  const { getCharacterDataByName, clearError, process, setProcess } = useMarvelService();
 
   const characterLoaded = (character) => {
     if (!character) {
@@ -21,25 +44,19 @@ const SearchCharForm = () => {
   };
 
   const getCharacterData = (charName) => {
-    if (error) {
-      clearError();
-    }
+    clearError();
 
-    getCharacterDataByName(charName).then(characterLoaded);
+    getCharacterDataByName(charName)
+      .then(characterLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   let charNameLink;
 
-  const spinner = loading ? "Search..." : null;
-  const errorPage = error ? <Page404 /> : null;
-
-  const characterNotFound =
-    charName === "not found!" && !loading && !errorPage ? (
-      <span style={{ color: "#9F0013" }}>Character with this name do not exist! Be careful!</span>
-    ) : null;
-
-  const content =
-    charName && !loading && !characterNotFound && !errorPage ? `There is! Visit ${charName.name} page?` : null;
+  const characterNotFound = {
+    title: "not found!",
+    element: <span style={{ color: "#9F0013" }}>Character with this name do not exist! Be careful!</span>,
+  };
 
   charName || characterNotFound ? (charNameLink = "search__form_link active") : (charNameLink = "search__form_link");
 
@@ -69,10 +86,8 @@ const SearchCharForm = () => {
             </button>
             <ErrorMessage name="charName" component="span" className="search__form_wrapper-error" />
             <div className={charNameLink}>
-              <p>
-                {spinner} {characterNotFound} {content}
-              </p>
-              {characterNotFound ? null : (
+              <p>{setContent(process, charName, characterNotFound)}</p>
+              {charName === "not found!" || charName === "" ? null : (
                 <Link to={`characters/${charName.name}`} className="button button__secondary">
                   <div className="inner">To page</div>
                 </Link>

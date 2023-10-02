@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import useMarvelService from "../services/MarvelService";
+import setContent from "../utils/setContent";
 
 import AppBanner from "../components/appBanner/AppBanner";
-import Page404 from "../components/page404/Page404";
-import Spinner from "../components/spinner/Spinner";
 
 const withSingleInfo = (WrapperComponent) => {
   return (props) => {
@@ -18,7 +17,7 @@ const withSingleInfo = (WrapperComponent) => {
 
     const id = useParams();
 
-    const { loading, error, clearError, getSingleComicById, getCharacterDataByName } = useMarvelService();
+    const { clearError, getSingleComicById, getCharacterDataByName, process, setProcess } = useMarvelService();
 
     const getDataLoaded = (singleData) => {
       setData(singleData);
@@ -27,29 +26,27 @@ const withSingleInfo = (WrapperComponent) => {
     const getData = () => {
       for (let key in id) {
         if (key === "comicId") {
-          getSingleComicById(id.comicId).then(getDataLoaded);
+          getSingleComicById(id.comicId)
+            .then(getDataLoaded)
+            .then(() => setProcess("confirmed"));
         } else if (key === "charName") {
-          getCharacterDataByName(id.charName).then(getDataLoaded);
+          getCharacterDataByName(id.charName)
+            .then(getDataLoaded)
+            .then(() => setProcess("confirmed"));
         }
       }
     };
 
     useEffect(() => {
-      if (error) {
-        clearError();
-      }
+      clearError();
 
       getData();
     }, [id]);
 
-    const spinner = loading ? <Spinner /> : null;
-    const errorPage = error ? <Page404 /> : null;
-    const content = data && !spinner && !errorPage ? <WrapperComponent data={data} goBack={goBack} /> : null;
-
     return (
       <>
         <AppBanner />
-        {spinner} {errorPage} {content}
+        {setContent(process, WrapperComponent, data, goBack)}
       </>
     );
   };
