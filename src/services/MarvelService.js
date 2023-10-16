@@ -4,7 +4,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 
 function useMarvelService() {
   const apiBaseUrl = "https://gateway.marvel.com:443/v1/public";
-  const apiPublicKey = `apikey=${API_KEY}`;
+  const apiPublicKey = `apikey=4a4925b838851c7de398b4ffaf6ece12`;
 
   const { request, clearError, process, setProcess } = useHttp();
 
